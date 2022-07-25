@@ -20,6 +20,11 @@ import {
 
 import * as dat from 'dat.gui';
 
+ import * as math from 'mathjs';
+
+ import * as Parser from 'expr-eval';
+
+
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 export function createScene(renderer: WebGLRenderer) {
   const scene = new Scene();
@@ -33,7 +38,7 @@ export function createScene(renderer: WebGLRenderer) {
 
   let shadeMaterial: MeshLambertMaterial;
   let parameters: any;
-  let gui_xMin: any;
+  let gui_xMin, gui_xMax, gui_yMin, gui_yMax, gui_ZFuncText: any; 
   let xMin: -10;
   let xMax: 10;
   let xRange: any;
@@ -46,14 +51,17 @@ export function createScene(renderer: WebGLRenderer) {
   let zMin: 10, zMax: 20, zRange: any;
   let graphMesh: any;
   let x, y, target: any;
-  
+  let a : {xMax:10, xMin:-10, yMax:10, yMin:-10, zFuncText: String};
+  let parser: any;
+
   /**
    * Add some simple ambient lights to illuminate the model.
    */
   const ambientLight = new AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
   let gui = new dat.GUI();
-
+  init();
+  createGraph();
   // const stats = Stats;
   // console.log(stats);
   
@@ -91,7 +99,7 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       //const model = koalaModel.clone();
-      createGraph();
+      
       // const geometry = new BoxGeometry( 1, 1, 1 );
       // const material = new MeshBasicMaterial( {color: 0x00ff00} );
       // const cube = new Mesh( geometry, material );
@@ -127,42 +135,49 @@ export function createScene(renderer: WebGLRenderer) {
     planeMarker.visible = false;
   }
 
-  // function init(){
-  //   
-  //   parameters = 
-  //   {
-  //     // resetCam:  function() { resetCamera(); },	
-  //     // preset1:   function() { preset01(); },
-  //     // graphFunc: function() { createGraph(); },
-  //     finalValue: 337
-  //   };
-  //   console.log(gui);
-  //   let cubeFolder = gui.addFolder('Cube')
-  //   cubeFolder.add(xMin, 'xMin',0,10);
+  
 
-  //   console.log(gui_xMin);
+  function init(){
+    a = {xMax:10, xMin:-10, yMax:10, yMin:-10, zFuncText: "sin(sqrt(a*x^2  + b*y^2))"}
+    parameters = 
+	{
+		graphFunc: function() { createGraph(); },
+	};
+
+    console.log("hello")
+
+    gui_xMin = gui.add( a, 'xMin' ).name('x Minimum = ');
+    gui_xMax = gui.add( a, 'xMax' ).name('x Minimum = ');
+    gui_yMin = gui.add( a, 'yMax' ).name('y Manimum = ');
+    gui_yMax = gui.add( a, 'yMin' ).name('y Manimum = ');
+    gui_ZFuncText = gui.add( a, 'zFuncText' ).name('Function= ');
+    gui.add( parameters, 'graphFunc' ).name("Graph Function");
+    gui_ZFuncText.setValue("sin(sqrt(a*x^2  + b*y^2))");
+    parser = new Parser.Parser();
+  
  
-  // }
+  }
 
 function createGraph()
 {
-	xRange = 20;
-	yRange = 20;
-  xMax =10;
-  xMin = -10;
-  yMax = 10;
-  yMin = -10;
-  console.log("RANGE",xRange);
+	xRange = a.xMax -a.xMin;
+	yRange = a.yMax - a.yMin;
+ // xMin = -10;
+ // yMax = 10;
+  //yMin = -10;
+  //console.log("RANGE",xRange,a);
 	//zFunc = Parser.parse(zFuncText).toJSFunction( ['x','y'] );
-	let meshFunction = function(x:any, y:any, target:any) 
+	let meshFunction = function(x1:any, y1:any, target:any) 
 	{
-    
-    console.log("X",x);
-		x = xRange * x + xMin;
-		y = yRange * y + yMin;
+    console.log(a);
 
-		var z = Math.cos(x) * Math.sqrt(y); //= Math.cos(x) * Math.sqrt(y);
-    console.log("X",x,"Y",y,"Z", z);
+		x = xRange * x1 + a.xMin;
+		y = yRange * y1 + a.yMin;
+  
+		//var z = Parser.parse(a.zFuncText).toJSFunction( ['x','y'] ); 
+    var f= parser.parse('sin(x) + y').toJSFunction("x,y");
+    var z = f(x,y);
+    console.log("Z",z);
 		if ( isNaN(z) )
 			return target.set(0,0,0); // TODO: better fix
 		else
@@ -179,7 +194,7 @@ function createGraph()
   
 	zMin = graphGeometry.boundingBox.min.z;
 	zMax = graphGeometry.boundingBox.max.z;
-  console.log("Z",zMax);
+  //console.log("Z",zMax);
 	zRange = zMax - zMin;
 	var color, point, face, numberOfSides, vertexIndex;
 	// faces are indexed using characters
@@ -188,7 +203,7 @@ function createGraph()
 	const colorAttr = graphGeometry.attributes.color;
 	const vertexG=  new Vector3();
 	let colors = [];
-	console.log(graphGeometry.attributes.position.count);
+	//console.log(graphGeometry.attributes.position.count);
 	for ( var i = 0; i < positionAttribute.count; i++ ) 
 	{
 		vertexG.fromBufferAttribute(positionAttribute,i);

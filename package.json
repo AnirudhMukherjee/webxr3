@@ -32,6 +32,8 @@
   "dependencies": {
     "@types/dat.gui": "^0.7.7",
     "dat.gui": "^0.7.9",
+    "expr-eval": "^2.0.2",
+    "mathjs": "^11.0.1",
     "three": "^0.138.3"
   }
 }
