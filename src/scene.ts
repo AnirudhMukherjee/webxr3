@@ -10,11 +10,18 @@ import {
   Scene,
   WebGLRenderer,
   XRFrame,
+  MeshLambertMaterial,
+  Vector3,
+  Color,
+  Float32BufferAttribute
 } from "three";
 
+import * as dat from 'dat.gui';
+
+import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 export function createScene(renderer: WebGLRenderer) {
   const scene = new Scene();
-
+  console.log(":ASD")
   const camera = new PerspectiveCamera(
     70,
     window.innerWidth / window.innerHeight,
@@ -22,12 +29,32 @@ export function createScene(renderer: WebGLRenderer) {
     20,
   );
 
+  let shadeMaterial: MeshLambertMaterial;
+  let parameters: any;
+  let gui_xMin: any;
+  let xMin: -10;
+  let xMax: 10;
+  let xRange: any;
+  let yRange: any;
+  let yMax: 10;
+  let yMin: -10;
+  let zFun: any;
+  let graphGeometry: any;
+  let segments: 20;
+  let zMin, zMax, zRange: any;
+  let graphMesh: any;
+  let x, y, target: any;
+  
   /**
    * Add some simple ambient lights to illuminate the model.
    */
   const ambientLight = new AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
+  let gui = new dat.GUI();
 
+  // const stats = Stats;
+  // console.log(stats);
+  
   /**
    * Load the gLTF model and assign result to variable.
    */
@@ -38,6 +65,8 @@ export function createScene(renderer: WebGLRenderer) {
   gltfLoader.load("../assets/models/koala.glb", (gltf: GLTF) => {
     koalaModel = gltf.scene.children[0];
   });
+
+ 
 
   /**
    * Create the plane marker to show on tracked surfaces.
@@ -60,7 +89,7 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       const model = koalaModel.clone();
-
+      createGraph();
       // Place the model on the spot where the marker is showing.
       model.position.setFromMatrixPosition(planeMarker.matrix);
 
@@ -88,6 +117,91 @@ export function createScene(renderer: WebGLRenderer) {
   function onHitTestResultEmpty() {
     planeMarker.visible = false;
   }
+
+  // function init(){
+  //   shadeMaterial = new MeshLambertMaterial( {  vertexColors: true } );
+  //   parameters = 
+  //   {
+  //     // resetCam:  function() { resetCamera(); },	
+  //     // preset1:   function() { preset01(); },
+  //     // graphFunc: function() { createGraph(); },
+  //     finalValue: 337
+  //   };
+  //   console.log(gui);
+  //   let cubeFolder = gui.addFolder('Cube')
+  //   cubeFolder.add(xMin, 'xMin',0,10);
+
+  //   console.log(gui_xMin);
+ 
+  // }
+
+function createGraph()
+{
+	xRange = xMax - xMin;
+	yRange = yMax - yMin;
+	//zFunc = Parser.parse(zFuncText).toJSFunction( ['x','y'] );
+	let meshFunction = function(x:any, y:any, target:any) 
+	{
+		x = xRange * x + xMin;
+		y = yRange * y + yMin;
+		var z = Math.sin(x*x + y*y); //= Math.cos(x) * Math.sqrt(y);
+		if ( isNaN(z) )
+			return target.set(0,0,0); // TODO: better fix
+		else
+			return target.set(x,y,z);
+	};
+	
+	// true => sensible image tile repeat...
+	graphGeometry = new ParametricGeometry( meshFunction, segments, segments );
+	
+	///////////////////////////////////////////////
+	// calculate vertex colors based on Z values //
+	///////////////////////////////////////////////
+	graphGeometry.computeBoundingBox();
+	zMin = graphGeometry.boundingBox.min.z;
+	zMax = graphGeometry.boundingBox.max.z;
+
+	zRange = zMax - zMin;
+	var color, point, face, numberOfSides, vertexIndex;
+	// faces are indexed using characters
+
+	const positionAttribute = graphGeometry.getAttribute('position');
+	const colorAttr = graphGeometry.attributes.color;
+	const vertexG=  new Vector3();
+	let colors = [];
+	console.log(graphGeometry.attributes.position.count);
+	for ( var i = 0; i < positionAttribute.count; i++ ) 
+	{
+		vertexG.fromBufferAttribute(positionAttribute,i);
+		// colorAttr.setXYZ(i, 1,0,0);
+		//console.log(vertexG);
+		// point = graphGeometry.vertices[ i ];
+		color = new Color( 0xff00ff );
+		color.setHSL( 0.7 * (zMax - vertexG.z) / zRange, 1, 0.5 );
+		colors.push(color.r, color.g, color.b);
+
+	}
+	graphGeometry.setAttribute('color', new Float32BufferAttribute( colors, 3 ));
+
+	///////////////////////
+	// end vertex colors //
+	///////////////////////
+	
+	// material choices: vertexColorMaterial, wireMaterial , normMaterial , shadeMaterial
+	
+	if (graphMesh) 
+	{
+		scene.remove( graphMesh );
+		// renderer.deallocateObject( graphMesh );
+	}
+	graphMesh = new Mesh( graphGeometry, shadeMaterial );
+	graphMesh.doubleSided = true;
+	scene.add(graphMesh);
+  console.log(graphMesh);
+}
+
+
+  
 
   /**
    * The main render loop.
