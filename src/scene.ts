@@ -15,7 +15,8 @@ import {
   Color,
   Float32BufferAttribute,
   BoxGeometry,
-  MeshBasicMaterial
+  MeshBasicMaterial,
+  DoubleSide
 } from "three";
 
 import * as dat from 'dat.gui';
@@ -36,7 +37,7 @@ export function createScene(renderer: WebGLRenderer) {
     20,
   );
 
-  let shadeMaterial: MeshLambertMaterial;
+  let shadeMaterial: MeshBasicMaterial;
   let parameters: any;
   let gui_xMin, gui_xMax, gui_yMin, gui_yMax, gui_ZFuncText: any; 
   let xMin: -10;
@@ -228,12 +229,14 @@ function createGraph()
 	// 	scene.remove( graphMesh );
 	// 	// renderer.deallocateObject( graphMesh );
 	// }
-  shadeMaterial = new MeshLambertMaterial( { vertexColors: true } );
+  shadeMaterial = new MeshBasicMaterial( { vertexColors: true,  } );
+  shadeMaterial.side = DoubleSide;
 	graphMesh = new Mesh( graphGeometry, shadeMaterial );
+
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
   graphMesh.visible = true;
-  graphMesh.scale.set(0.01,0.01,0.01);
+  graphMesh.scale.set(0.05,0.05,0.05);
 	scene.add(graphMesh);
   console.log(graphMesh);
 }
