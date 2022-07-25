@@ -43,7 +43,7 @@ export function createScene(renderer: WebGLRenderer) {
   let zFun: any;
   let graphGeometry: any;
   let segments: 20;
-  let zMin, zMax, zRange: any;
+  let zMin: 10, zMax: 20, zRange: any;
   let graphMesh: any;
   let x, y, target: any;
   
@@ -146,14 +146,23 @@ export function createScene(renderer: WebGLRenderer) {
 
 function createGraph()
 {
-	xRange = xMax - xMin;
-	yRange = yMax - yMin;
+	xRange = 20;
+	yRange = 20;
+  xMax =10;
+  xMin = -10;
+  yMax = 10;
+  yMin = -10;
+  console.log("RANGE",xRange);
 	//zFunc = Parser.parse(zFuncText).toJSFunction( ['x','y'] );
 	let meshFunction = function(x:any, y:any, target:any) 
 	{
+    
+    console.log("X",x);
 		x = xRange * x + xMin;
 		y = yRange * y + yMin;
-		var z = Math.sin(x*x + y*y); //= Math.cos(x) * Math.sqrt(y);
+
+		var z = Math.cos(x) * Math.sqrt(y); //= Math.cos(x) * Math.sqrt(y);
+    console.log("X",x,"Y",y,"Z", z);
 		if ( isNaN(z) )
 			return target.set(0,0,0); // TODO: better fix
 		else
@@ -167,9 +176,10 @@ function createGraph()
 	// calculate vertex colors based on Z values //
 	///////////////////////////////////////////////
 	graphGeometry.computeBoundingBox();
+  
 	zMin = graphGeometry.boundingBox.min.z;
 	zMax = graphGeometry.boundingBox.max.z;
-
+  console.log("Z",zMax);
 	zRange = zMax - zMin;
 	var color, point, face, numberOfSides, vertexIndex;
 	// faces are indexed using characters
@@ -198,12 +208,12 @@ function createGraph()
 	
 	// material choices: vertexColorMaterial, wireMaterial , normMaterial , shadeMaterial
 	
-	if (graphMesh) 
-	{
-		scene.remove( graphMesh );
-		// renderer.deallocateObject( graphMesh );
-	}
-  shadeMaterial = new MeshLambertMaterial( {  vertexColors: true } );
+	// if (graphMesh) 
+	// {
+	// 	scene.remove( graphMesh );
+	// 	// renderer.deallocateObject( graphMesh );
+	// }
+  shadeMaterial = new MeshLambertMaterial( {color: new Color('#00ff00'),  vertexColors: false } );
 	graphMesh = new Mesh( graphGeometry, shadeMaterial );
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
