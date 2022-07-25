@@ -13,7 +13,9 @@ import {
   MeshLambertMaterial,
   Vector3,
   Color,
-  Float32BufferAttribute
+  Float32BufferAttribute,
+  BoxGeometry,
+  MeshBasicMaterial
 } from "three";
 
 import * as dat from 'dat.gui';
@@ -89,7 +91,14 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       //const model = koalaModel.clone();
-      createGraph();
+      //createGraph();
+      const geometry = new BoxGeometry( 1, 1, 1 );
+      const material = new MeshBasicMaterial( {color: 0x00ff00} );
+      const cube = new Mesh( geometry, material );
+      cube.position.setFromMatrixPosition(planeMarker.matrix);
+      cube.rotation.y = Math.random() * (Math.PI * 2);
+      cube.visible = true;
+      scene.add( cube );
       // Place the model on the spot where the marker is showing.
       //model.position.setFromMatrixPosition(planeMarker.matrix);
 
