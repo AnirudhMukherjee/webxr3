@@ -153,7 +153,7 @@ export function createScene(renderer: WebGLRenderer) {
     gui_yMax = gui.add( a, 'yMin' ).name('y Manimum = ');
     gui_ZFuncText = gui.add( a, 'zFuncText' ).name('Function= ');
     gui.add( parameters, 'graphFunc' ).name("Graph Function");
-    gui_ZFuncText.setValue("sin(sqrt(a*x^2  + b*y^2))");
+    gui_ZFuncText.setValue("sin(sqrt(x^2  + y^2))");
     parser = new Parser.Parser();
   
  
@@ -235,7 +235,7 @@ function createGraph()
 
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
-  graphMesh.rotation.x = (Math.PI);
+  graphMesh.rotation.z = (Math.PI/2);
   graphMesh.visible = true;
   graphMesh.scale.set(0.025,0.025,0.025);
 	scene.add(graphMesh);
