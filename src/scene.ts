@@ -176,7 +176,7 @@ function createGraph()
 		y = yRange * y1 + a.yMin;
   
 		//var z = Parser.parse(a.zFuncText).toJSFunction( ['x','y'] ); 
-    var f= parser.parse('sin(x) + y').toJSFunction("x,y");
+    var f= parser.parse(a.zFuncText).toJSFunction("x,y");
     var z = f(x,y);
     console.log("Z",z);
 		if ( isNaN(z) )
