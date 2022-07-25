@@ -88,16 +88,16 @@ export function createScene(renderer: WebGLRenderer) {
    */
   function onSelect() {
     if (planeMarker.visible) {
-      const model = koalaModel.clone();
+      //const model = koalaModel.clone();
       createGraph();
       // Place the model on the spot where the marker is showing.
-      model.position.setFromMatrixPosition(planeMarker.matrix);
+      //model.position.setFromMatrixPosition(planeMarker.matrix);
 
       // Rotate the model randomly to give a bit of variation.
-      model.rotation.y = Math.random() * (Math.PI * 2);
-      model.visible = true;
+      //model.rotation.y = Math.random() * (Math.PI * 2);
+      //model.visible = true;
 
-      scene.add(model);
+      //scene.add(model);
     }
   }
 
@@ -196,6 +196,8 @@ function createGraph()
 	}
 	graphMesh = new Mesh( graphGeometry, shadeMaterial );
 	graphMesh.doubleSided = true;
+  graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
+  graphMesh.visible = true;
 	scene.add(graphMesh);
   console.log(graphMesh);
 }
