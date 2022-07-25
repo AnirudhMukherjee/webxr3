@@ -100,6 +100,11 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       //const model = koalaModel.clone();
+          if (graphMesh) 
+      {
+        scene.remove( graphMesh );
+        // renderer.deallocateObject( graphMesh );
+      }
       createGraph();
       // const geometry = new BoxGeometry( 1, 1, 1 );
       // const material = new MeshBasicMaterial( {color: 0x00ff00} );
