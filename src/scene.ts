@@ -235,8 +235,9 @@ function createGraph()
 
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
+  graphMesh.rotation.y = Math.random() * (Math.PI * 2);
   graphMesh.visible = true;
-  graphMesh.scale.set(0.05,0.05,0.05);
+  graphMesh.scale.set(0.025,0.025,0.025);
 	scene.add(graphMesh);
   console.log(graphMesh);
 }
