@@ -144,6 +144,11 @@ export function createScene(renderer: WebGLRenderer) {
   
 
   function init(){
+    if (graphMesh) 
+      {
+        scene.remove( graphMesh );
+        // renderer.deallocateObject( graphMesh );
+      }
     a = {xMax:10, xMin:-10, yMax:10, yMin:-10, zFuncText: "sin(sqrt(a*x^2  + b*y^2))"}
     parameters = 
 	{
