@@ -75,7 +75,7 @@ export function createScene(renderer: WebGLRenderer) {
    */
   const planeMarker: Mesh = createPlaneMarker();
   scene.add(planeMarker);
-  createGraph();
+  
   /**
    * Setup the controller to get input from the XR space.
    */
@@ -91,7 +91,7 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       //const model = koalaModel.clone();
-      
+      createGraph();
       // const geometry = new BoxGeometry( 1, 1, 1 );
       // const material = new MeshBasicMaterial( {color: 0x00ff00} );
       // const cube = new Mesh( geometry, material );
@@ -213,11 +213,12 @@ function createGraph()
 	// 	scene.remove( graphMesh );
 	// 	// renderer.deallocateObject( graphMesh );
 	// }
-  shadeMaterial = new MeshLambertMaterial( {color: new Color('#00ff00'),  vertexColors: false } );
+  shadeMaterial = new MeshLambertMaterial( { vertexColors: true } );
 	graphMesh = new Mesh( graphGeometry, shadeMaterial );
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
   graphMesh.visible = true;
+  graphMesh.scale.set(0.01,0.01,0.01);
 	scene.add(graphMesh);
   console.log(graphMesh);
 }
