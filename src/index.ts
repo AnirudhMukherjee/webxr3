@@ -26,7 +26,7 @@ function initializeXRApp() {
   );
 
   displayIntroductionMessage();
-  console.log("ASD");
+
   createScene(renderer);
 };
 
