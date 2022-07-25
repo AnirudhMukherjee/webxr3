@@ -37,7 +37,7 @@ export function createScene(renderer: WebGLRenderer) {
     20,
   );
 
-  let shadeMaterial: MeshBasicMaterial;
+  let shadeMaterial: MeshLambertMaterial;
   let parameters: any;
   let gui_xMin, gui_xMax, gui_yMin, gui_yMax, gui_ZFuncText: any; 
   let xMin: -10;
@@ -222,8 +222,8 @@ function createGraph()
 		//console.log(vertexG);
 		// point = graphGeometry.vertices[ i ];
 		color = new Color( 0xff00ff );
-		color.setRGB(0.7 * (xMax - vertexG.x) / xRange , 0.7 * (yMax - vertexG.y) / yRange, 0.7 * (zMax - vertexG.z) / zRange );
-    //color.setHSL( 0.7 * (zMax - vertexG.z) / zRange, 1, 0.5 );
+		//color.setRGB(0.7 * (xMax - vertexG.x) / xRange , 0.7 * (yMax - vertexG.y) / yRange, 0.7 * (zMax - vertexG.z) / zRange );
+    color.setHSL( 0.7 * (zMax - vertexG.z) / zRange, 0.7, 0.5 );
 		colors.push(color.r, color.g, color.b);
 
 	}
@@ -240,7 +240,7 @@ function createGraph()
 	// 	scene.remove( graphMesh );
 	// 	// renderer.deallocateObject( graphMesh );
 	// }
-  shadeMaterial = new MeshBasicMaterial( { vertexColors: true,  } );
+  shadeMaterial = new MeshLambertMaterial( { vertexColors: true,  } );
   shadeMaterial.side = DoubleSide;
 	graphMesh = new Mesh( graphGeometry, shadeMaterial );
 
