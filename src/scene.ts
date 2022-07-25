@@ -235,7 +235,7 @@ function createGraph()
 
 	graphMesh.doubleSided = true;
   graphMesh.position.setFromMatrixPosition(planeMarker.matrix);
-  graphMesh.rotation.y = (Math.PI);
+  graphMesh.rotation.x = (Math.PI);
   graphMesh.visible = true;
   graphMesh.scale.set(0.025,0.025,0.025);
 	scene.add(graphMesh);
