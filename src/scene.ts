@@ -61,7 +61,7 @@ export function createScene(renderer: WebGLRenderer) {
   scene.add(ambientLight);
   let gui = new dat.GUI();
   init();
-  createGraph();
+
   // const stats = Stats;
   // console.log(stats);
   
@@ -99,7 +99,7 @@ export function createScene(renderer: WebGLRenderer) {
   function onSelect() {
     if (planeMarker.visible) {
       //const model = koalaModel.clone();
-      
+      createGraph();
       // const geometry = new BoxGeometry( 1, 1, 1 );
       // const material = new MeshBasicMaterial( {color: 0x00ff00} );
       // const cube = new Mesh( geometry, material );
