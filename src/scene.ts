@@ -222,7 +222,8 @@ function createGraph()
 		//console.log(vertexG);
 		// point = graphGeometry.vertices[ i ];
 		color = new Color( 0xff00ff );
-		color.setHSL( 0.7 * (zMax - vertexG.z) / zRange, 1, 0.5 );
+		color.setRGB(0.7 * (xMax - vertexG.x) / xRange , 0.7 * (yMax - vertexG.y) / yRange, 0.7 * (zMax - vertexG.z) / zRange );
+    //color.setHSL( 0.7 * (zMax - vertexG.z) / zRange, 1, 0.5 );
 		colors.push(color.r, color.g, color.b);
 
 	}
