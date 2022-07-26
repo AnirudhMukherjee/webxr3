@@ -99,6 +99,7 @@ export function createScene(renderer: WebGLRenderer) {
    */
   function onSelect() {
     if (planeMarker.visible) {
+      
       //const model = koalaModel.clone();
           if (graphMesh) 
       {
@@ -152,7 +153,9 @@ export function createScene(renderer: WebGLRenderer) {
     a = {xMax:10, xMin:-10, yMax:10, yMin:-10, zFuncText: "sin(sqrt(a*x^2  + b*y^2))"}
     parameters = 
 	{
-		graphFunc: function() { createGraph(); },
+		graphFunc: function() { 
+      //createGraph(); 
+    },
 	};
 
     console.log("hello")
